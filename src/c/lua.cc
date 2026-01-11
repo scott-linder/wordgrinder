@@ -8,7 +8,62 @@
 #include <string>
 #include "Luau/Compiler.h"
 
+#include "lua.h"
+#include "lualib.h"
+
+#define LUA_VERSION_NUM 510
+#define lua_pushglobaltable(L) lua_pushvalue(L, LUA_GLOBALSINDEX)
+
+#undef lua_pushcfunction
+#define lua_pushcfunction(L, fn) lua_pushcclosurek(L, fn, NULL, 0, NULL)
+
+#undef lua_pushcclosure
+#define lua_pushcclosure(L, fn, nup) lua_pushcclosurek(L, fn, NULL, nup, NULL)
+
+#define lua_rawlen lua_objlen
+
 lua_State* L;
+
+static Luau::CompileOptions copts()
+{
+    Luau::CompileOptions result = {};
+    result.optimizationLevel = 2;
+    result.debugLevel = 1;
+    result.coverageLevel = 0;
+    return result;
+}
+
+static Luau::ParseOptions popts()
+{
+    Luau::ParseOptions result = {};
+    result.allowDeclarationSyntax = true;
+    return result;
+}
+
+int luaL_loadstring(lua_State* L, const char* str, const char* name)
+{
+    lua_setsafeenv(L, LUA_ENVIRONINDEX, false);
+
+    std::string bytecode = Luau::compile(std::string(str), copts(), popts());
+    if (luau_load(L,
+            name ? name : "(anonymous)",
+            bytecode.data(),
+            bytecode.size(),
+            0) == 0)
+        return 0;
+
+    lua_pushnil(L);
+    lua_insert(L, -2); /* put before error message */
+    return LUA_ERRRUN;
+}
+
+int luaL_dostring(lua_State* L, const char* str, const char* name)
+{
+    int status = luaL_loadstring(L, str, name);
+    if (status == 0)
+        return lua_pcall(L, 0, LUA_MULTRET, 0);
+    return status;
+}
 
 static int report(lua_State* L, int status)
 {
@@ -108,9 +163,6 @@ void script_init(void)
 
     lua_pushstring(L, STRINGIFY(ARCH));
     lua_setglobal(L, "ARCH");
-
-    lua_pushstring(L, STRINGIFY(FRONTEND));
-    lua_setglobal(L, "FRONTEND");
 
     lua_pushstring(L, STRINGIFY(DEFAULT_DICTIONARY_PATH));
     lua_setglobal(L, "DEFAULT_DICTIONARY_PATH");

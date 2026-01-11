@@ -19,7 +19,7 @@ local Write = wg.write
 local int = math.floor
 local string_rep = string.rep
 
-ESCAPE_KEY = (FRONTEND == "ncurses") and "CTRL+C" or "ESCAPE"
+ESCAPE_KEY = "CTRL+C"
 
 type FormCommand = "nop" | "confirm" | "redraw" | "cancel"
 type ActionResult = FormCommand | MenuCallback

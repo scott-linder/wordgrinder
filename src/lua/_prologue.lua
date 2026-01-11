@@ -38,7 +38,6 @@ declare function QueueRedraw()
 
 declare HOME: string
 declare CONFIGDIR: string
-declare FRONTEND: string
 declare DEBUG: boolean
 declare VERSION: string
 declare FILEFORMAT: number

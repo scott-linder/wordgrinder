@@ -20,17 +20,10 @@ def manpage(self, name, date, version, src: Target):
 
 
 manpage(
-    name="xwordgrinder.1",
-    date=DATE,
-    version=VERSION,
-    src="wordgrinder.man",
-)
-
-manpage(
     name="wordgrinder.1",
     date=DATE,
     version=VERSION,
-    src="xwordgrinder.man",
+    src="wordgrinder.man",
 )
 
 simplerule(
