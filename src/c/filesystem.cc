@@ -12,7 +12,7 @@
 #include <dirent.h>
 #include <string>
 #include <filesystem>
-#include <fmt/format.h>
+#include <iostream>
 
 #ifdef WIN32
 #include <windows.h>
@@ -237,7 +237,7 @@ static int printout_cb(lua_State* L)
 static int mkdtemp_cb(lua_State* L)
 {
     std::string path = std::filesystem::temp_directory_path().string();
-    fmt::print(stderr, "temp directory={}\n", path);
+    std::cerr << "temp directory=" << path << "\n";
 
 #ifdef WIN32
     path = path + "/" + createUuid();

@@ -9,7 +9,6 @@
 #include <wctype.h>
 #include <sys/time.h>
 #include <time.h>
-#include <fmt/format.h>
 
 #define KEY_TIMEOUT (KEY_MAX + 1)
 #define FIRST_COLOUR_ID 1
@@ -419,11 +418,17 @@ std::string dpy_getkeyname(uni_t k)
             return "KEY_ESCAPE";
     }
 
-    if (k < 32)
-        return fmt::format("KEY_^{:c}", k + 'A' - 1);
+    if (k < 32) {
+        std::string Result = "KEY_^";
+        Result.push_back(k + 'A' - 1);
+        return Result;
+    }
 
-    if ((k >= KEY_F0) && (k < (KEY_F0 + 64)))
-        return fmt::format("KEY_F{}", k - KEY_F0);
+    if ((k >= KEY_F0) && (k < (KEY_F0 + 64))) {
+        std::string Result = "KEY_F{}";
+        Result += std::to_string(k - KEY_F0);
+        return Result;
+    }
 
     const char* name = keyname(k);
     if (name)
@@ -439,12 +444,21 @@ std::string dpy_getkeyname(uni_t k)
         {
             const char* ps = ncurses_prefix_to_name(buf);
             const char* ss = ncurses_suffix_to_name(suffix);
-            if (ss)
-                return fmt::format("KEY_{}{}", ss, ps);
+            if (ss) {
+                std::string Result = "KEY_";
+                Result += ss;
+                Result += ps;
+                return Result;
+            }
         }
     }
 
-    return fmt::format("KEY_UNKNOWN_{} ({})", k, name ? name : "???");
+    std::string Result = "KEY_UNKNOWN_";
+    Result += k;
+    Result += " (";
+    Result += name ? name : "???";
+    Result += ")";
+    return Result;
 }
 
 static bool running = false;
