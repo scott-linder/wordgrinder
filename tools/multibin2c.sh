@@ -5,22 +5,34 @@
 
 set -e
 
-symbol="$1"
+output="$1"
+shift
+self="$1"
+shift
+objectify="$1"
 shift
 
+symbol="$(basename "$output" .h)"
+
+out() {
+	echo "$@" >>"$output"
+}
+
+echo >"$output"
+
 count=0
 for f in "$@"; do
-	echo
-	echo "/* This is $f */"
-	python3 build/_objectify.py $f file_$count
+	out
+	out "/* This is $f */"
+	python3 "$objectify" $f file_$count >>"$output"
 	count=$(expr $count + 1)
 done
 
-echo "const FileDescriptor $symbol[] = {"
+out "const FileDescriptor $symbol[] = {"
 count=0
 for f in "$@"; do
-	echo "  { std::string((const char*) file_$count, sizeof(file_$count)), \"$f\" },"
+	out "  { std::string((const char*) file_$count, sizeof(file_$count)), \"$f\" },"
 	count=$(expr $count + 1)
 done
-echo "  {}"
-echo "};"
+out "  {}"
+out "};"
