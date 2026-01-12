@@ -39,7 +39,6 @@ cxxlibrary(
         "third_party/luau",
         "third_party/wcwidth",
         "third_party/minizip",
-        "third_party/libstb",
     ],
 )
 
