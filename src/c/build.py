@@ -11,7 +11,6 @@ from config import (
 )
 
 package(name="libcmark", package="libcmark", fallback="third_party/cmark")
-package(name="fmt", package="fmt", fallback="third_party/fmt")
 package(name="libncursesw", package="ncursesw")
 
 cxxlibrary(
@@ -33,7 +32,6 @@ cxxlibrary(
     ],
     caller_cflags=[f"-DFILEFORMAT={FILEFORMAT}"],
     deps=[
-        ".+fmt",
         ".+libcmark",
         ".+libncursesw",
         "third_party/luau",
