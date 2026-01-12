@@ -12,6 +12,7 @@ from config import (
 
 package(name="libcmark", package="libcmark", fallback="third_party/cmark")
 package(name="fmt", package="fmt", fallback="third_party/fmt")
+package(name="libncursesw", package="ncursesw")
 
 cxxlibrary(
     name="globals",
@@ -42,36 +43,20 @@ cxxlibrary(
     ],
 )
 
-
-def make_wordgrinder(name, deps=[], cflags=[], ldflags=[]):
-    cxxprogram(
-        name=name,
-        srcs=[
-            "./lua.cc",
-            "./clipboard.cc",
-        ],
-        cflags=cflags
-        + [
-            f"-DDEFAULT_DICTIONARY_PATH={DEFAULT_DICTIONARY_PATH}",
-        ],
-        ldflags=ldflags,
-        deps=[
-            ".+libcmark",
-            ".+globals",
-            "third_party/clip+clip_common",
-            "third_party/luau",
-            "third_party/minizip",
-            "third_party/wcwidth",
-        ]
-        + deps,
-    )
-
-package(name="libncursesw", package="ncursesw")
-
-make_wordgrinder(
-    "wordgrinder",
+cxxprogram(
+    name="wordgrinder",
+    srcs=[
+        "./lua.cc",
+        "./clipboard.cc",
+    ],
+    cflags=[
+        f"-DDEFAULT_DICTIONARY_PATH={DEFAULT_DICTIONARY_PATH}",
+    ],
     deps=[
-        "third_party/clip+clip_none",
+        ".+libcmark",
+        ".+globals",
+        "third_party/luau",
+        "third_party/minizip",
         "third_party/wcwidth",
     ],
 )

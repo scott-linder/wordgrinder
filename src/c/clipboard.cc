@@ -4,10 +4,66 @@
  */
 
 #include "globals.h"
-#include <vector>
-#include "clip.h"
 
-static clip::format wordgrinderFormat;
+#include <cassert>
+#include <map>
+#include <vector>
+
+namespace clip {
+
+typedef size_t format;
+enum formats : format {
+    FORMAT_TEXT = 1,
+    FORMAT_WG = 100,
+};
+typedef std::vector<char> Buffer;
+typedef std::map<format, Buffer> Map;
+
+static Map g_data;
+
+static bool clear() {
+  g_data.clear();
+  return true;
+}
+
+static bool is_convertible(format f) {
+  return (g_data.find(f) != g_data.end());
+}
+
+static bool set_data(format f, const char* buf, size_t len) {
+  Buffer& dst = g_data[f];
+
+  dst.resize(len);
+  if (buf && len > 0)
+    std::copy(buf, buf+len, dst.begin());
+
+  if (f == clip::FORMAT_TEXT &&
+      len > 0 && dst.back() != 0) {
+    dst.push_back(0);
+  }
+
+  return true;
+}
+
+static bool get_data(format f, char* buf, size_t len) {
+  assert(buf);
+
+  if (!buf || !is_convertible(f))
+    return false;
+
+  const Buffer& src = g_data[f];
+  std::copy(src.begin(), src.end(), buf);
+  return true;
+}
+
+static size_t get_data_length(format f) {
+  if (is_convertible(f))
+    return g_data[f].size();
+  else
+    return 0;
+}
+
+} // namespace clip
 
 static int clipboard_clear_cb(lua_State* L)
 {
@@ -15,14 +71,14 @@ static int clipboard_clear_cb(lua_State* L)
     return 0;
 }
 
-static void getdata(lua_State* L, clip::lock& l, clip::format format)
+static void getdata(lua_State* L, clip::format format)
 {
-    if (l.is_convertible(format))
+    if (clip::is_convertible(format))
     {
-        size_t len = l.get_data_length(format);
+        size_t len = clip::get_data_length(format);
 
         std::vector<char> buf(len);
-        l.get_data(format, &buf[0], len);
+        clip::get_data(format, &buf[0], len);
         if (buf.back() == 0)
             len--;
         lua_pushlstring(L, &buf[0], len);
@@ -33,38 +89,32 @@ static void getdata(lua_State* L, clip::lock& l, clip::format format)
 
 static int clipboard_get_cb(lua_State* L)
 {
-    clip::lock l;
-
-    getdata(L, l, clip::text_format());
-    getdata(L, l, wordgrinderFormat);
+    getdata(L, clip::FORMAT_TEXT);
+    getdata(L, clip::FORMAT_WG);
 
     return 2;
 }
 
-static void setdata(lua_State* L, clip::lock& l, int index, clip::format format)
+static void setdata(lua_State* L, int index, clip::format format)
 {
     size_t len;
     const char* ptr = lua_tolstring(L, index, &len);
 
     if (ptr)
-        l.set_data(format, ptr, len);
+        clip::set_data(format, ptr, len);
 }
 
 static int clipboard_set_cb(lua_State* L)
 {
-    clip::lock l;
-
-    l.clear();
-    setdata(L, l, 1, clip::text_format());
-    setdata(L, l, 2, wordgrinderFormat);
+    clip::clear();
+    setdata(L, 1, clip::FORMAT_TEXT);
+    setdata(L, 2, clip::FORMAT_WG);
 
     return 0;
 }
 
 void clipboard_init()
 {
-    wordgrinderFormat = clip::register_format("com.cowlark.wordgrinder.wgtext");
-
     const static luaL_Reg funcs[] = {
         {"clipboard_clear", clipboard_clear_cb},
         {"clipboard_get",   clipboard_get_cb  },
