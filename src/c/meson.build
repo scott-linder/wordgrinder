@@ -17,3 +17,20 @@ globals = static_library(
     minizip_dep,
   ],
 )
+
+wordgrinder = executable(
+  'wordgrinder',
+  [
+    'lua.cc',
+    'clipboard.cc'
+  ],
+  dependencies : [
+    luau_vm_dep,
+    luau_compiler_dep,
+    ncurses,
+  ],
+  link_with : [
+    globals,
+  ],
+  cpp_args : f'-DFILEFORMAT=@fileformat@',
+)

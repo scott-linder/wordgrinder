@@ -1,8 +1,8 @@
 project(
-  'luau_meson',
+  'wordgrinder',
   'c', 'cpp',
   meson_version : '>= 1.3.0',
-  version : '0.1',
+  version : '0.9',
   default_options : ['warning_level=1'],
 )
 
@@ -18,6 +18,7 @@ luau_opts.add_cmake_defines({
 })
 luau = cmake.subproject('luau', options: luau_opts)
 luau_vm_dep = luau.dependency('Luau.VM')
+luau_compiler_dep = luau.dependency('Luau.Compiler')
 
 cmark_opts = cmake.subproject_options()
 cmark_opts.add_cmake_defines({
@@ -32,7 +33,6 @@ minizip = cmake.subproject('minizip')
 minizip_dep = minizip.dependency('minizip')
 
 fileformat = 8
-version = '0.9'
 date = 'today'
 
 subdir('src/lua/')
