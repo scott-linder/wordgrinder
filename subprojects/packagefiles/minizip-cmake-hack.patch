@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 213d03a..15746f7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -680,8 +680,6 @@ if(NOT TARGET MINIZIP::minizip)
+ endif()
+ 
+ set_target_properties(${MINIZIP_TARGET} PROPERTIES
+-                      VERSION ${VERSION}
+-                      SOVERSION ${SOVERSION}
+                       LINKER_LANGUAGE C
+                       DEFINE_SYMBOL "MZ_EXPORTS")
+ 

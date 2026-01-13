@@ -1,0 +1,5 @@
+[wrap-git]
+url = https://github.com/zlib-ng/minizip-ng
+revision = 4.0.10
+depth = 1
+diff_files = minizip-cmake-hack.patch
