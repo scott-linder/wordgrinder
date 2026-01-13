@@ -220,6 +220,12 @@ static int escape_cb(lua_State* L)
     size_t inputbuffersize;
     const char* inputbuffer = luaL_checklstring(L, 1, &inputbuffersize);
 
+    if (inputbuffersize == 0)
+    {
+        lua_pushlstring(L, nullptr, 0);
+        return 1;
+    }
+
     const size_t outputbuffersize = inputbuffersize * 2; /* big enough to fit */
     std::vector<char> outputbuffer(outputbuffersize);
 
@@ -260,6 +266,12 @@ static int unescape_cb(lua_State* L)
 {
     size_t inputbuffersize;
     const char* inputbuffer = luaL_checklstring(L, 1, &inputbuffersize);
+
+    if (inputbuffersize == 0)
+    {
+        lua_pushlstring(L, nullptr, 0);
+        return 1;
+    }
 
     const size_t outputbuffersize = inputbuffersize; /* big enough to fit */
     std::vector<char> outputbuffer(outputbuffersize);
