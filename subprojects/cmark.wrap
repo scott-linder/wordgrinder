@@ -1,0 +1,5 @@
+[wrap-git]
+url = https://github.com/commonmark/cmark
+revision = 0.31.1
+depth = 1
+diff_files = cmark-cmake-hack.patch

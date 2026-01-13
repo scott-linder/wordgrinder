@@ -22,13 +22,8 @@ luau_compiler_dep = luau.dependency('Luau.Compiler')
 luau_analysis_dep = luau.dependency('Luau.Analysis')
 
 cmark_opts = cmake.subproject_options()
-cmark_opts.add_cmake_defines({
-  'CMARK_TESTS': false,
-  'CMARK_STATIC': true,
-  'CMARK_SHARED': false,
-})
-cmark = cmake.subproject('cmark', options: cmark_opts)
-cmark_dep = cmark.dependency('cmark_static')
+cmark = cmake.subproject('cmark')
+cmark_dep = cmark.dependency('cmark')
 
 minizip = cmake.subproject('minizip')
 minizip_dep = minizip.dependency('minizip')
