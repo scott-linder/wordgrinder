@@ -1,0 +1,15 @@
+diff --git a/Compiler/src/Compiler.cpp b/Compiler/src/Compiler.cpp
+index a4497d4..2547bbb 100644
+--- a/Compiler/src/Compiler.cpp
++++ b/Compiler/src/Compiler.cpp
+@@ -3875,6 +3875,10 @@ struct Compiler
+         {
+             // do nothing
+         }
++        else if (node->is<AstStatDeclareGlobal>() || node->is<AstStatDeclareExternType>() || node->is<AstStatDeclareFunction>())
++        {
++            // do nothing
++        }
+         else
+         {
+             LUAU_ASSERT(!"Unknown statement type");

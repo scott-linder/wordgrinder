@@ -1,0 +1,5 @@
+[wrap-git]
+url = https://github.com/luau-lang/luau
+revision = 0.704
+depth = 1
+diff_files = luau-compiler-hack.patch

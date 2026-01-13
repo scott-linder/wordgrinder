@@ -8,8 +8,6 @@
 #include "Luau/TypeInfer.h"
 #include "Luau/BuiltinDefinitions.h"
 #include "Luau/Frontend.h"
-#include "Luau/TypeAttach.h"
-#include "Luau/Transpiler.h"
 #include "assert.h"
 
 static Luau::Config singletonConfig;
@@ -28,7 +26,7 @@ public:
     LocalFileResolver(const std::string& source): _source(source) {}
 
     std::optional<Luau::ModuleInfo> resolveModule(
-        const Luau::ModuleInfo* context, Luau::AstExpr* expr) override
+        const Luau::ModuleInfo* context, Luau::AstExpr* expr, const Luau::TypeCheckLimits& limits) override
     {
         assert(false);
     }
@@ -49,7 +47,7 @@ private:
 class LocalConfigResolver : public Luau::ConfigResolver
 {
 public:
-    const Luau::Config& getConfig(const Luau::ModuleName& name) const override
+    const Luau::Config& getConfig(const Luau::ModuleName& name, const Luau::TypeCheckLimits& limits) const override
     {
         return singletonConfig;
     }
