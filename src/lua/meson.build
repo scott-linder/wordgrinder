@@ -1,7 +1,7 @@
 script_table = custom_target(
   input : [
     '../../tools/multibin2c.sh',
-    '../../build/_objectify.py',
+    '../../tools/_objectify.py',
     '_prologue.lua',
     'objects.lua',
     'events.lua',

@@ -1,5 +1,5 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.TH WORDGRINDER 1 "@@@DATE@@@" "@@@VERSION@@@" "Simple word processor for writing first drafts"
+.TH WORDGRINDER 1 "2026-01-13" "@version@" "Simple word processor for writing first drafts"
 .\"
 .\" Some roff macros, for reference:
 .\" .nh        disable hyphenation

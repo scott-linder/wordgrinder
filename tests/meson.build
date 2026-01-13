@@ -77,5 +77,5 @@ tests = [
 ]
 
 foreach t : tests
-  test(t, wordgrinder, workdir : meson.source_root(), args : ['--lua', join_paths(meson.current_source_dir(), t + '.lua')])
+  test(t, wordgrinder, workdir : meson.project_source_root(), args : ['--lua', join_paths(meson.current_source_dir(), t + '.lua')])
 endforeach
