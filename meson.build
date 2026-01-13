@@ -37,3 +37,4 @@ date = 'today'
 
 subdir('src/lua/')
 subdir('src/c/')
+subdir('tests/')
