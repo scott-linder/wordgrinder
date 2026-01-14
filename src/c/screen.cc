@@ -573,8 +573,6 @@ static int setnormal_cb(lua_State* L)
 
 void dpy_writeunichar(int x, int y, uni_t c)
 {
-    if (!enable_unicode && (c > 0xff))
-        c = '?';
     dpy_writechar(x, y, c);
 }
 
@@ -768,13 +766,12 @@ static int getchar_cb(lua_State* L)
 
 static int useunicode_cb(lua_State* L)
 {
-    lua_pushboolean(L, enable_unicode);
+    lua_pushboolean(L, true);
     return 1;
 }
 
 static int setunicode_cb(lua_State* L)
 {
-    enable_unicode = lua_toboolean(L, 1);
     return 0;
 }
 

@@ -14,11 +14,6 @@
 #include <filesystem>
 #include <iostream>
 
-#ifdef WIN32
-#include <windows.h>
-#include <rpc.h>
-#endif
-
 static int pusherrno(lua_State* L)
 {
     lua_pushnil(L);
@@ -26,21 +21,6 @@ static int pusherrno(lua_State* L)
     lua_pushinteger(L, errno);
     return 3;
 }
-
-#ifdef WIN32
-static std::string createUuid()
-{
-    UUID uuid;
-    UuidCreate(&uuid);
-
-    unsigned char* s;
-    UuidToStringA(&uuid, &s);
-    std::string ss((char*)s);
-    RpcStringFreeA(&s);
-
-    return ss;
-}
-#endif
 
 static int chdir_cb(lua_State* L)
 {
@@ -184,17 +164,8 @@ static int access_cb(lua_State* L)
     const char* filename = luaL_checklstring(L, 1, NULL);
     int mode = forceinteger(L, 2);
 
-#if defined WIN32
-    wchar_t widepath[strlen(filename) + 1];
-    MultiByteToWideChar(
-        CP_UTF8, 0, filename, -1, widepath, strlen(filename) + 1);
-
-    if (_waccess(widepath, mode) != 0)
-        return pusherrno(L);
-#else
     if (access(filename, mode) != 0)
         return pusherrno(L);
-#endif
 
     lua_pushboolean(L, true);
     return 1;
@@ -239,16 +210,6 @@ static int mkdtemp_cb(lua_State* L)
     std::string path = std::filesystem::temp_directory_path().string();
     std::cerr << "temp directory=" << path << "\n";
 
-#ifdef WIN32
-    path = path + "/" + createUuid();
-    if (std::filesystem::create_directory(path))
-    {
-        lua_pushstring(L, path.c_str());
-        return 1;
-    }
-    else
-        return pusherrno(L);
-#else
     path += "/XXXXXX";
     if (mkdtemp(&path[0]))
     {
@@ -257,7 +218,6 @@ static int mkdtemp_cb(lua_State* L)
     }
     else
         return pusherrno(L);
-#endif
 }
 
 static int readfile_cb(lua_State* L)

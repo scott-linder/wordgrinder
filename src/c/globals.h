@@ -195,6 +195,4 @@ extern void dpy_getscreensize(int* x, int* y);
 extern uni_t dpy_getchar(double timeout);
 extern std::string dpy_getkeyname(uni_t key);
 
-extern bool enable_unicode;
-
 #endif
